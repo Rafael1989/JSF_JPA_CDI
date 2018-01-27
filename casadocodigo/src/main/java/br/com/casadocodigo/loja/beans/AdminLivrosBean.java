@@ -50,10 +50,6 @@ public class AdminLivrosBean {
 	
 	@Transactional
 	public String salva() {
-		for(Integer autorId : autoresId) {
-			Autor autor = new Autor(autorId);
-			livro.addAutor(autor);
-		}
 		dao.salva(livro);
 		
 		context.getExternalContext().getFlash().setKeepMessages(true);

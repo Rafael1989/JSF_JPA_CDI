@@ -2,6 +2,7 @@ package br.com.casadocodigo.loja.models;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -10,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -20,36 +23,39 @@ import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 public class Livro {
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	@NotBlank
 	private String titulo;
-	
+
 	@Lob
 	@NotBlank
-	@Length(min=10)
+	@Length(min = 10)
 	private String descricao;
-	@DecimalMin(value="30")
+	@DecimalMin(value = "30")
 	private BigDecimal preco;
-	@Min(value=50)
+	@Min(value = 50)
 	private Integer numeroPaginas;
-	
+
 	@ManyToMany
-	@Size(min=1)
+	@Size(min = 1)
 	@NotNull
 	private List<Autor> autores = new ArrayList<>();
-	
+
+	@Temporal(TemporalType.DATE)
+	private Calendar dataPublicacao;
+
 	public List<Autor> getAutores() {
 		return autores;
 	}
-	
+
 	public void setAutores(List<Autor> autores) {
 		this.autores = autores;
 	}
-	
+
 	public void addAutor(Autor autor) {
 		this.autores.add(autor);
 	}
@@ -86,11 +92,18 @@ public class Livro {
 		this.numeroPaginas = numeroPaginas;
 	}
 
+	public Calendar getDataPublicacao() {
+		return dataPublicacao;
+	}
+
+	public void setDataPublicacao(Calendar dataPublicacao) {
+		this.dataPublicacao = dataPublicacao;
+	}
+
 	@Override
 	public String toString() {
 		return "Livro [titulo=" + titulo + ", descricao=" + descricao + ", preco=" + preco + ", numeroPaginas="
 				+ numeroPaginas + "]";
 	}
-
 
 }
