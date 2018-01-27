@@ -6,7 +6,7 @@
 	xmlns:f="http://xmlns.jcp.org/jsf/core">
 
 	<h:messages/>
-	<h:form>
+	<h:form enctype="multipart/form-data">
 		<div>
 			<h:outputLabel value="Título"/>
 			<h:inputText id="titulo" required="true" value="#{adminLivrosBean.livro.titulo}" requiredMessage="O campo título é obrigatório"/>
@@ -39,6 +39,11 @@
 				itemLabel="#{autor.nome}" itemValue="#{autor}"/>
 			</h:selectManyListbox>
 			<h:message for="autores"/>
+		</div>
+		<div>
+			<h:outputLabel value="Capa do livro"/>
+			<h:inputFile id="capaLivro" value="#{adminLivrosBean.capaLivro}"/>
+			<h:message for="capaLivro"/>
 		</div>
 		<h:commandButton value="Cadastrar" action="#{adminLivrosBean.salva}"/>
 	</h:form>

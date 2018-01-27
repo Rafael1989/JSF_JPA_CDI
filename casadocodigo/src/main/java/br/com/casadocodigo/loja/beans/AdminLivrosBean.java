@@ -1,5 +1,6 @@
 package br.com.casadocodigo.loja.beans;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,10 +9,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.Part;
 import javax.transaction.Transactional;
 
 import br.com.casadocodigo.loja.daos.AutorDao;
 import br.com.casadocodigo.loja.daos.LivroDao;
+import br.com.casadocodigo.loja.infra.FileSaver;
 import br.com.casadocodigo.loja.models.Autor;
 import br.com.casadocodigo.loja.models.Livro;
 
@@ -32,6 +35,8 @@ public class AdminLivrosBean {
 	
 	private List<Integer> autoresId = new ArrayList<>();
 	
+	private Part capaLivro;
+	
 	public List<Integer> getAutoresId() {
 		return autoresId;
 	}
@@ -48,10 +53,20 @@ public class AdminLivrosBean {
 		this.livro = livro;
 	}
 	
+	public Part getCapaLivro() {
+		return capaLivro;
+	}
+
+	public void setCapaLivro(Part capaLivro) {
+		this.capaLivro = capaLivro;
+	}
+
 	@Transactional
-	public String salva() {
+	public String salva() throws IOException {
 		dao.salva(livro);
-		
+		FileSaver fileSaver = new FileSaver();
+		String relativePath = fileSaver.write(capaLivro, "rafael");
+		livro.setCapaPath(relativePath);
 		context.getExternalContext().getFlash().setKeepMessages(true);
 		context.addMessage(null, new FacesMessage("O livro foi salvo com sucesso"));
 		
