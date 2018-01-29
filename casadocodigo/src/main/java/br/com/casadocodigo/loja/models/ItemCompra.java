@@ -32,7 +32,6 @@ public class ItemCompra {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((livro == null) ? 0 : livro.hashCode());
-		result = prime * result + ((quantidade == null) ? 0 : quantidade.hashCode());
 		return result;
 	}
 
@@ -49,11 +48,6 @@ public class ItemCompra {
 			if (other.livro != null)
 				return false;
 		} else if (!livro.equals(other.livro))
-			return false;
-		if (quantidade == null) {
-			if (other.quantidade != null)
-				return false;
-		} else if (!quantidade.equals(other.quantidade))
 			return false;
 		return true;
 	}
