@@ -5,7 +5,11 @@ import java.net.URI;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.annotation.Resource;
 import javax.inject.Inject;
+import javax.jms.Destination;
+import javax.jms.JMSContext;
+import javax.jms.JMSProducer;
 import javax.servlet.ServletContext;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -27,7 +31,13 @@ public class PagamentoService {
 	private CompraDao compraDao;
 	
 	@Context
-    ServletContext context;
+	private ServletContext context;
+	
+	@Inject
+	private JMSContext jmsContext;
+	
+	@Resource(name="java:/jms/topics/CarrinhoComprasTopico")
+	private Destination destination;
 	
 	@Inject
 	private PagamentoGateway pagamentoGateway;
@@ -36,11 +46,17 @@ public class PagamentoService {
 
 	@POST
 	public void paga(@Suspended AsyncResponse ar, @QueryParam("uuid") String uuid) {
+		String contextPath = context.getContextPath();
+		JMSProducer producer = jmsContext.createProducer();
+		
 		executor.submit(()->{
 			try {
 				Compra compra = compraDao.buscaPorUuid(uuid);
 				pagamentoGateway.paga(compra.getTotal());
-				URI uri = UriBuilder.fromPath("http://localhost:8080"+ context.getContextPath() + "/index.xhtml")
+				
+				producer.send(destination, compra.getUuid());
+				
+				URI uri = UriBuilder.fromPath("http://localhost:8080"+ contextPath  + "/index.xhtml")
 				.queryParam("msg", "Compra realizada com sucesso")
 				.build();
 				Response response = Response.seeOther(uri).build();
